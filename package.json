@@ -1,18 +1,24 @@
 {
-  "name": "chatServer",
+  "name": "chatserver",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon",
     "start": "npm run build && node build/index.js",
-    "build": "rimraf ./build && tsc"
+    "build": "rimraf ./build && tsc",
+    "lint": "eslint . --ext .ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^18.7.21",
+    "@typescript-eslint/eslint-plugin": "^5.38.0",
+    "@typescript-eslint/parser": "^5.38.0",
+    "eslint": "^8.24.0",
+    "eslint-plugin-no-loops": "^0.3.0",
+    "eslint-plugin-shopify": "^35.1.0",
     "nodemon": "^2.0.20",
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.1",
