@@ -2,3 +2,6 @@
 /dist
 /build
 .env
+
+private.key
+public.key
