@@ -47,11 +47,12 @@ export function validateToken(token: string): Promise<TokenPayload> {
   const publicKey = fs.readFileSync('public.key');
 
   const verifyOptions: VerifyOptions = {
-    algorithms: ['RS256']
+    algorithms: ['RS256'],
+    
   };
 
   return new Promise((resolve, reject) => {
-    verify(token, publicKey, verifyOptions, (error, decoded: TokenPayload) => {
+    verify(token, publicKey, verifyOptions, (error, decoded: TokenPayload | any) => {
       if (error) return reject(error);
       resolve(decoded);
     });
