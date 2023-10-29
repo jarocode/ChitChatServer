@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { AuthController } from '../controllers/auth.controllers';
 
 const router = Router();
 
@@ -10,7 +11,7 @@ router.use(function (_req, res, next) {
   next();
 });
 
-router.post('/signUp', (req: Request, res: Response) => {});
+router.post('/signUp', AuthController.signUp);
 
 router.post('/signIn', (req: Request, res: Response) => {
   res.status(200).json('signedIn successfully');
