@@ -1,5 +1,6 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controllers';
+import checkDuplicateEmailOrUserName from '../middlewares/auth/checkDuplicateEmailOrUserName';
 
 const router = Router();
 
@@ -11,10 +12,8 @@ router.use(function (_req, res, next) {
   next();
 });
 
-router.post('/signUp', AuthController.signUp);
+router.post('/signUp', checkDuplicateEmailOrUserName, AuthController.signUp);
 
-router.post('/signIn', (req: Request, res: Response) => {
-  res.status(200).json('signedIn successfully');
-});
+router.post('/signIn', AuthController.signIn);
 
 export default router;
