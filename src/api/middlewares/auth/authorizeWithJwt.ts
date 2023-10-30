@@ -1,14 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
 import { validateToken } from '../../utils/jwt.utils';
 
-/**
- * middleware to check whether user has access to a specific endpoint
- *
- * @param allowedAccessTypes list of allowed access types of a specific endpoint
- */
+// Define a custom interface for the user information
+interface User {
+  id: number;
+  username: string;
+  // Add other user properties as needed
+}
+
+// Extend the Request interface to include the 'user' property
+declare global {
+  namespace Express {
+    interface Request {
+      user?: User;
+    }
+  }
+}
+
 const authorizeWithJwt =
-  (allowedAccessTypes: string[]) =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  () => async (req: Request, res: Response, next: NextFunction) => {
     try {
       let jwt = req.headers.authorization;
 
@@ -25,15 +35,7 @@ const authorizeWithJwt =
       // verify token hasn't expired yet
       const decodedToken = await validateToken(jwt);
 
-      const hasAccessToEndpoint = allowedAccessTypes.some((at) =>
-        decodedToken.accessTypes.some((uat) => uat === at)
-      );
-
-      if (!hasAccessToEndpoint) {
-        return res
-          .status(401)
-          .json({ message: 'No enough privileges to access endpoint' });
-      }
+      req.user = decodedToken;
 
       next();
     } catch (error: any) {
