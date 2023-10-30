@@ -40,7 +40,7 @@ const authorizeWithJwt =
       next();
     } catch (error: any) {
       if (error.name === 'TokenExpiredError') {
-        res.status(401).json({ message: 'Expired token' });
+        res.status(401).json({ success: false, message: 'Expired token' });
         return;
       }
 
