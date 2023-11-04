@@ -9,7 +9,7 @@ import authRoutes from './api/routes/auth.routes';
 dotenv.config();
 
 const app = express();
-const httpServer = initSocket(app).server;
+const { io, httpServer } = initSocket(app);
 
 const port = process.env.PORT || 8080;
 
@@ -25,6 +25,21 @@ app.use(function (_req, res, next) {
 app.use('/api', authRoutes);
 
 connectDB();
+
+io.on('connection', (socket) => {
+  console.log('id', socket.id);
+  socket.on('chat', (data) => {
+    console.log('chat', data);
+    io.emit('chat', data);
+    // socket.broadcast.emit('chat', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
+
+  // You can implement your Socket.io logic here
+});
 
 // console.log('env', process.env.NODE_ENV);
 

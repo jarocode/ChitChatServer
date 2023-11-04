@@ -8,10 +8,9 @@ import mongoose from 'mongoose';
 export const connectDB = async () => {
   try {
     // const conn = await mongoose.connect(config.mongoUri);
-    const conn = await mongoose.connect(
-      'mongodb+srv://jaros:xDRPC5eagyZ3v2hc@cluster0.6j6ma.mongodb.net/?retryWrites=true&w=majority',
-      { dbName: 'ChitChat' }
-    );
+    const conn = await mongoose.connect(process.env.MONGO_URI || '', {
+      dbName: process.env.MONGODB_DATABASE_NAME
+    });
 
     console.log(`MongoDB connected: ${conn.connection.host}`);
   } catch (error) {
