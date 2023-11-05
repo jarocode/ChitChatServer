@@ -31,7 +31,11 @@ const signIn = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
-    const user = await models.user.findOne({ username }).exec();
+    const isEmail = username.includes('.com');
+
+    const user = await models.user
+      .findOne(isEmail ? { email: username } : { username })
+      .exec();
 
     if (!user)
       return res
@@ -48,12 +52,16 @@ const signIn = async (req: Request, res: Response) => {
     }
     const userData = {
       id: user.id,
-      username: user.username
+      username: user.username,
+      email: user.email
     };
     const accessToken = generateToken(userData);
-    res
-      .status(200)
-      .send({ success: true, message: 'Signed in successfully', accessToken });
+    res.status(200).send({
+      success: true,
+      message: 'Signed in successfully',
+      accessToken,
+      user: userData
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: { error } });
