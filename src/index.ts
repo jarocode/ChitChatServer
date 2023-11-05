@@ -5,14 +5,17 @@ import cors from 'cors';
 import { initSocket } from './config/socket';
 import { connectDB } from './config/db';
 import authRoutes from './api/routes/auth.routes';
+import userRoutes from './api/routes/user.routes';
 
 dotenv.config();
 
+//app
 const app = express();
 const { io, httpServer } = initSocket(app);
 
 const port = process.env.PORT || 8080;
 
+//Middlewares
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(function (_req, res, next) {
@@ -23,9 +26,12 @@ app.use(function (_req, res, next) {
   next();
 });
 app.use('/api', authRoutes);
+app.use('/api', userRoutes);
 
+//database connection
 connectDB();
 
+//socket
 io.on('connection', (socket) => {
   console.log('id', socket.id);
   socket.on('chat', (data) => {
@@ -37,20 +43,9 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('A user disconnected');
   });
-
-  // You can implement your Socket.io logic here
 });
 
-// console.log('env', process.env.NODE_ENV);
-
-// Only generate a token for lower level environments
-// if (process.env.NODE_ENV !== 'production') {
-//   console.log('JWT', generateToken());
-//   console.log('VALIDATED_JWT', validateToken(generateToken()));
-// }
-
-// the rest logic
-
+//server
 httpServer.listen(port, () => {
   console.log(`server listening at http://localhost:${port}`);
 });
