@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 import { models } from '../models';
 
-const getUsers = async (req: Request, res: Response) => {
+const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // console.log('userId', req.user?.id);
     const userId = req.user?.id;
@@ -18,8 +18,7 @@ const getUsers = async (req: Request, res: Response) => {
       message: 'users retrieved successfully'
     });
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ success: false, message: error?.message });
+    next(error);
   }
 };
 

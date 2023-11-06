@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+
 import { validateToken } from '../../utils/jwt.utils';
+import { AppError } from '../../utils/error.utils';
 
 // Define a custom interface for the user information
 interface User {
@@ -27,7 +29,7 @@ const authorizeWithJwt = async (
 
     // verify request has token
     if (!jwt) {
-      return res.status(401).json({ message: 'Invalid token ' });
+      return next(new AppError('Invalid token ', 401));
     }
 
     // remove Bearer if using Bearer Authorization mechanism
@@ -43,11 +45,12 @@ const authorizeWithJwt = async (
     next();
   } catch (error: any) {
     if (error.name === 'TokenExpiredError') {
-      res.status(401).json({ success: false, message: 'Expired token' });
+      // res.status(401).json({ success: false, message: 'Expired token' });
+      next(new AppError('Expired token', 401));
       return;
     }
 
-    res.status(500).json({ message: 'Failed to authenticate user' });
+    return next(new AppError('Failed to authenticate user', 500));
   }
 };
 
