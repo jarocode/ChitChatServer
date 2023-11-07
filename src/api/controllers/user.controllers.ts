@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { models } from '../models';
+import { tryCatch } from '../utils/error.utils';
 
-const getUsers = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    // console.log('userId', req.user?.id);
+const getUsers = tryCatch(
+  async (req: Request, res: Response, _next: NextFunction) => {
     const userId = req.user?.id;
     const users = await models.user
       .find({ _id: { $ne: userId } })
@@ -17,10 +17,8 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
       data: users,
       message: 'users retrieved successfully'
     });
-  } catch (error: any) {
-    next(error);
   }
-};
+);
 
 export const UserController = {
   getUsers
