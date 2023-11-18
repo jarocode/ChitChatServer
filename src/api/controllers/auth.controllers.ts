@@ -1,34 +1,31 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 
 import { models } from '../models';
 import { generateToken } from '../utils/jwt.utils';
+import { tryCatch, AppError } from '../utils/error.utils';
 
-const signUp = async (req: Request, res: Response) => {
-  try {
-    const { username, email, password } = req.body;
-    const salt = await bcrypt.genSalt(10);
+const signUp = tryCatch(async (req: Request, res: Response) => {
+  const { username, email, password } = req.body;
+  const salt = await bcrypt.genSalt(10);
 
-    const hashedPassword = await bcrypt.hash(password, salt);
+  const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = new models.user({
-      username,
-      email,
-      password: hashedPassword
-    });
+  const user = new models.user({
+    username,
+    email,
+    password: hashedPassword
+  });
 
-    await user.save();
+  await user.save();
 
-    return res
-      .status(200)
-      .send({ success: true, message: 'registration successful!' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ success: false, message: error });
-  }
-};
-const signIn = async (req: Request, res: Response) => {
-  try {
+  return res
+    .status(200)
+    .send({ success: true, message: 'registration successful!' });
+});
+
+const signIn = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { username, password } = req.body;
 
     const isEmail = username.includes('.com');
@@ -37,19 +34,10 @@ const signIn = async (req: Request, res: Response) => {
       .findOne(isEmail ? { email: username } : { username })
       .exec();
 
-    if (!user)
-      return res
-        .status(400)
-        .send({ success: false, message: 'User does not exist' });
+    if (!user) return next(new AppError('User does not exist', 400));
     const passwordIsValid = bcrypt.compareSync(password, user.password);
 
-    if (!passwordIsValid) {
-      return res.status(401).send({
-        success: false,
-        accessToken: null,
-        message: 'Invalid Password!'
-      });
-    }
+    if (!passwordIsValid) return next(new AppError('Invalid Password!', 401));
     const userData = {
       id: user.id,
       username: user.username,
@@ -62,11 +50,8 @@ const signIn = async (req: Request, res: Response) => {
       accessToken,
       user: userData
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: { error } });
   }
-};
+);
 
 export const AuthController = {
   signUp,

@@ -8,8 +8,5 @@ const router = Router();
 router.use(authorizeWithJwt);
 
 router.get('/users', UserController.getUsers);
-// router.get('/users', (req, res) => {
-//   res.send('hello world!');
-// });
 
 export default router;
