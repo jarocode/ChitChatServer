@@ -6,6 +6,7 @@ import { initSocket } from './config/socket';
 import { connectDB } from './config/db';
 import authRoutes from './api/routes/auth.routes';
 import userRoutes from './api/routes/user.routes';
+import roomRoutes from './api/routes/room.routes';
 import errorHandler from './api/middlewares/error-handlers';
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.use(function (_req, res, next) {
 });
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);
+app.use('/api', roomRoutes);
 app.use(errorHandler.logErrors);
 app.use(errorHandler.clientError);
 

@@ -17,7 +17,8 @@ const UserSchema = new Schema<IUser>({
     type: String,
     required: true,
     unique: true
-  }
+  },
+  rooms: [Schema.Types.ObjectId]
 });
 
 const User = model('User', UserSchema);
