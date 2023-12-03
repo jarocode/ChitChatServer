@@ -41,8 +41,10 @@ const signIn = tryCatch(
     const userData = {
       id: user.id,
       username: user.username,
-      email: user.email
+      email: user.email,
+      rooms: user.rooms ?? null
     };
+
     const accessToken = generateToken(userData);
     res.status(200).send({
       success: true,

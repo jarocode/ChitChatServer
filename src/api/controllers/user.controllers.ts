@@ -11,7 +11,7 @@ const getUsers = tryCatch(
       .select('-password')
       .lean()
       .exec();
-    console.log('users', users);
+
     res.status(200).json({
       success: true,
       data: users,
