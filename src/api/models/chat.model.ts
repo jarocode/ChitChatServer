@@ -9,10 +9,16 @@ const ChatSchema = new Schema({
     required: true,
     type: Schema.Types.ObjectId
   },
-  room: {
+  room_id: {
     required: true,
     type: Schema.Types.ObjectId
-  }
+  },
+  created_at: { type: Date, default: Date.now }
+});
+
+ChatSchema.pre('save', function (next) {
+  this.created_at = new Date(Date.now());
+  next();
 });
 
 const Chat = model('Chat', ChatSchema);
