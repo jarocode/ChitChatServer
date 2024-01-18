@@ -7,6 +7,7 @@ const sendChat = tryCatch(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { message, room_id } = req.body;
     const user_id = req.user?.id;
+
     const newChat = new models.chat({
       user_id,
       room_id,
